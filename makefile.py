@@ -79,20 +79,47 @@ def write_file():
     '''
     return None
 
-def change_word(word, line_number, file_lines):
+def change_word(word, new_word, line_number, file_lines):
     '''
     This function changes all occurences of a word in the 
     provided line number.
     
     word: A string that will be replaced.
+    new_word: What to replace word for.
     line_number: The number of the line where the string is located.
     file_lines: Returned by the load_file function.
+    returns: 'Done!'
     '''
     pyautogui.press([str(line_number), 'G'])
     current_line = file_lines[line_number]
     words_in_line = current_line.split()
     word_position = words_in_line.index(word)+1
     # The (+1) comes from the fact that index starts at 0.
-    pyautogui.press
+    pyautogui.press([str(word_position), 'w')
+    pyautogui.press(['c', 'w'])
+    pyautogui.write(new_word, interval = .25)
+    return 'Done!'
 
+def change_from_until(begins_after, ends_before, new_expression, line_number, file_lines):
+    '''
+    Changes an expression on a line from begins_after until ends_before.
 
+    begins_after: A string delimiter.
+    ends_before: Another string delimiter.
+    new_expression: A string. What the expression will be replaced for.
+    file_lines: Returned by the load_file function.
+    returns: 'Done!'
+    '''
+    pyautogui.press([str(line_number), 'G'])
+    current_line = file_lines[line_number]
+    words_in_line = current_line.split()
+    begin_index = words_in_line.index(begins_after)
+    end_index = words_in_line.index(ends_before)
+
+    move_to = begin_index+1
+    replace_until = (end_index+1) - move_to
+    pyautogui.press([str(move_to), 'w'])
+    pyautogui.press(['c', str(replace_until), 'w'])
+    pyautogui.write(new_expression, interval = .25)
+    
+    return 'Done!'
