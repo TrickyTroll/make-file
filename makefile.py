@@ -8,6 +8,29 @@ if which("vim") == None:
     to work. Please install it.")
     exit()
 
+# File creation
+# The file should probably be precreated by the user.
+
+# File loading:
+def load_file(path_to_file):
+    '''
+    Loads a file by lines to help with movement while editing.
+
+    path_to_file: The path towards the file you want to load.
+    This should be the file you will edit later on.
+    returns: A dictionnary with strings associated with each 
+    line of the text file.
+    '''
+    with opent(path_to_file, "r") as stream:
+        lines = stream.readlines()
+    sort = {}
+    line_number = 1
+    for line in lines:
+        sort[line_number] = line
+        line_number += 1
+    return sort
+
+# Options to start vim
 def hard_start_vim(path_to_file):
     '''
     Starts vim with subprocess.
@@ -28,9 +51,13 @@ def start_vim(path_to_file):
     path_to_file: The path towards the file you want to edit.
     returns: 'Vim is running!'
     '''
-    
+    pyautogui.write("vim", interval = .25)
+    pyautogui.write(path_to_file, interval = .25)
+    pyautogui.press("enter")
 
-# Some vim utilities
+# Some vim utilities. These functions assume that load_file has run 
+# and that vim is running.
+
 def go_to_line(line_number):
     '''
     Moves the cursor to the line corresponding to line_number.
@@ -43,3 +70,29 @@ def go_to_line(line_number):
     pyautogui.press([line_number, "G"])
 
     return line_number
+
+def write_file():
+    '''
+    This command should rewrite the whole file using pyautogui.
+    Since I'm not sure about the use cases yet, the function has not
+    been implemented.
+    '''
+    return None
+
+def change_word(word, line_number, file_lines):
+    '''
+    This function changes all occurences of a word in the 
+    provided line number.
+    
+    word: A string that will be replaced.
+    line_number: The number of the line where the string is located.
+    file_lines: Returned by the load_file function.
+    '''
+    pyautogui.press([str(line_number), 'G'])
+    current_line = file_lines[line_number]
+    words_in_line = current_line.split()
+    word_position = words_in_line.index(word)+1
+    # The (+1) comes from the fact that index starts at 0.
+    pyautogui.press
+
+
