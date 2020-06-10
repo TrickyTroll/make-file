@@ -1,10 +1,11 @@
 import pyautogui
+import time
 import subprocess
 from shutil import which
 
 # Making sure vim is installed.
 if which("vim") == None:
-    print("You will need Vim if you want this program
+    print("You will need Vim if you want this program \
     to work. Please install it.")
     exit()
 
@@ -21,7 +22,7 @@ def load_file(path_to_file):
     returns: A dictionnary with strings associated with each 
     line of the text file.
     '''
-    with opent(path_to_file, "r") as stream:
+    with open(path_to_file, "r") as stream:
         lines = stream.readlines()
     sort = {}
     line_number = 1
@@ -51,8 +52,8 @@ def start_vim(path_to_file):
     path_to_file: The path towards the file you want to edit.
     returns: 'Vim is running!'
     '''
-    pyautogui.write("vim", interval = .25)
-    pyautogui.write(path_to_file, interval = .25)
+    pyautogui.write("vim ", interval = .25)
+    pyautogui.write(str(path_to_file), interval = .25)
     pyautogui.press("enter")
 
 # Some vim utilities. These functions assume that load_file has run 
@@ -79,7 +80,7 @@ def write_file():
     '''
     return None
 
-def change_word(word, new_word, line_number, file_lines):
+def change_word(word, new_word, line_number, file_lines, x=1):
     '''
     This function changes all occurences of a word in the 
     provided line number.
@@ -90,14 +91,20 @@ def change_word(word, new_word, line_number, file_lines):
     file_lines: Returned by the load_file function.
     returns: 'Done!'
     '''
-    pyautogui.press([str(line_number), 'G'])
+    foo = str(line_number)
+    bar = list(foo)
+    bar.append('G')
+    pyautogui.press(bar)
+    time.sleep(.1)
     current_line = file_lines[line_number]
     words_in_line = current_line.split()
     word_position = words_in_line.index(word)+1
     # The (+1) comes from the fact that index starts at 0.
-    pyautogui.press([str(word_position), 'w')
-    pyautogui.press(['c', 'w'])
+    pyautogui.press([str(word_position), 'w'])
+    pyautogui.press(['c',str(x), 'w'])
     pyautogui.write(new_word, interval = .25)
+    pyautogui.press('esc')
+    time.sleep(1)
     return 'Done!'
 
 def change_from_until(begins_after, ends_before, new_expression, line_number, file_lines):
@@ -110,9 +117,11 @@ def change_from_until(begins_after, ends_before, new_expression, line_number, fi
     file_lines: Returned by the load_file function.
     returns: 'Done!'
     '''
+    print(file_lines[9])
     pyautogui.press([str(line_number), 'G'])
     current_line = file_lines[line_number]
     words_in_line = current_line.split()
+    print(words_in_line)
     begin_index = words_in_line.index(begins_after)
     end_index = words_in_line.index(ends_before)
 
@@ -121,5 +130,10 @@ def change_from_until(begins_after, ends_before, new_expression, line_number, fi
     pyautogui.press([str(move_to), 'w'])
     pyautogui.press(['c', str(replace_until), 'w'])
     pyautogui.write(new_expression, interval = .25)
+    pyautogui.press('esc')
     
     return 'Done!'
+
+def stop_vim():
+
+    pyautogui.write(':q!', interval = .2)
